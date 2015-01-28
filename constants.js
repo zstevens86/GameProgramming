@@ -1,0 +1,64 @@
+/**
+ * Created by Zack on 1/26/2015.
+ */
+//------------
+//System Values
+//------------
+var STAGE_WIDTH = 800,
+    STAGE_HEIGHT = 700,
+//TIME_PER_FRAME = 33, //this equates to 30 fps
+    TIME_PER_FRAME = 200, //this equates to 30 fps
+
+    GAME_FONTS = "bold 20px sans-serif";
+
+var PATH_CHAR = "img/spritesheet.png";
+
+
+var CHAR_WIDTH = 16,
+    CHAR_HEIGHT = 16,
+    CHAR_START_X = 200,
+    CHAR_START_Y = 200;
+
+var IMAGE_START_X_RIGHT = 0,
+    IMAGE_START_Y_RIGHT = 0,
+    SPRITE_WIDTH_RIGHT = 31;
+
+var IMAGE_START_X_LEFT = 64,
+    IMAGE_START_Y_LEFT = 0,
+    SPRITE_WIDTH_LEFT = 96;
+
+var IMAGE_START_X_UP = 32,
+    IMAGE_START_Y_UP = 0,
+    SPRITE_WIDTH_UP = 64;
+
+var IMAGE_START_X_DOWN = 96,
+    IMAGE_START_Y_DOWN = 0,
+    SPRITE_WIDTH_DOWN = 128;
+
+var IMAGE_START_X_RIGHT_DIG = 0,
+    IMAGE_START_Y_RIGHT_DIG = 16,
+    SPRITE_WIDTH_RIGHT_DIG = 31;
+
+var IMAGE_START_X_LEFT_DIG = 64,
+    IMAGE_START_Y_LEFT_DIG = 16,
+    SPRITE_WIDTH_LEFT_DIG = 96;
+
+var IMAGE_START_X_UP_DIG = 32,
+    IMAGE_START_Y_UP_DIG = 16,
+    SPRITE_WIDTH_UP_DIG = 64;
+
+var IMAGE_START_X_DOWN_DIG = 96,
+    IMAGE_START_Y_DOWN_DIG = 16,
+    SPRITE_WIDTH_DOWN_DIG = 128;
+
+var MONSTER_WIDTH = 15,
+    MONSTER_HEIGHT = 14,
+    MONSTER_IMAGE_START_X = 0,
+    MONSTER_IMAGE_START_Y = 146;
+
+var TEXT_PRELOADING = "Loading ...",
+    TEXT_PRELOADING_X = 200,
+    TEXT_PRELOADING_Y = 200;
+
+
+
