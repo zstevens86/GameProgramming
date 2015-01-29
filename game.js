@@ -18,9 +18,12 @@ function animloop(){
     update();
 }
 
+//---------------------
+//Game Initialization
+//---------------------
 var bricks;
-var NROWS;
-var NCOLS;
+var NROWS = Math.floor(STAGE_HEIGHT/(CHAR_HEIGHT*2));
+var NCOLS = Math.floor(STAGE_WIDTH/(CHAR_WIDTH*2));
 var BLOCKWIDTH = CHAR_WIDTH*2;
 var BLOCKHEIGHT = CHAR_HEIGHT*2;
 
@@ -34,8 +37,6 @@ function init(){
 
 function initBlocks()
 {
-    NROWS = Math.floor(STAGE_HEIGHT/(CHAR_HEIGHT*2));
-    NCOLS = Math.floor(STAGE_WIDTH/(CHAR_WIDTH*2));
 
     bricks = new Array(NROWS);
     for (i=0; i < NROWS; i++)
@@ -114,7 +115,7 @@ function preloading()
 //------------
 //Game Loop
 //------------
-//Charater Start Position
+//Character Start Position
 var charX = CHAR_START_X;
 var charY = CHAR_START_Y;
 var movingLeft = true, movingRight = false, movingUp = false, movingDown = false;
@@ -123,6 +124,7 @@ function update()
 {
     //Draw Image
     drawMap();
+    drawMonsters();
 
     //Draw the character on screen
     if(movingLeft){
@@ -245,7 +247,7 @@ function moveDown(){
     }
 
     charY += CHAR_HEIGHT;
-    IMAGE_START_X_DOWN += CHAR_WIDTH
+    IMAGE_START_X_DOWN += CHAR_WIDTH;
     if (IMAGE_START_X_DOWN >= SPRITE_WIDTH_DOWN)
         IMAGE_START_X_DOWN = 96 ;
 }
@@ -253,7 +255,13 @@ function moveDown(){
 //-----------------
 //Monster spawning
 //-----------------
+function drawMonsters(){
 
+    for(i = 0; i < 5; i++){
+        ctx.drawImage(charImage, MONSTER_IMAGE_START_X, MONSTER_IMAGE_START_Y, MONSTER_WIDTH, MONSTER_HEIGHT,
+            MONSTER_X[i], MONSTER_Y[i], MONSTER_WIDTH*2, MONSTER_HEIGHT*2);
+    }
+}
 
 //-----------------
 //Map Drawing
