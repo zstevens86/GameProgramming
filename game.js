@@ -1,12 +1,28 @@
 /**
  * Created by Zack on 1/28/2015.
  */
+//---------------
+//Frame Animation
+//---------------
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
+function animloop(){
+    requestAnimFrame(animloop);
+    update();
+}
 
 var bricks;
 var NROWS;
 var NCOLS;
-var BLOCKWIDTH;
-var BLOCKHEIGHT;
+var BLOCKWIDTH = CHAR_WIDTH*2;
+var BLOCKHEIGHT = CHAR_HEIGHT*2;
 
 var MONSTER_X = new Array(5);
 var MONSTER_Y = new Array(5);
@@ -14,16 +30,12 @@ var MONSTER_Y = new Array(5);
 function init(){
     initBlocks();
     randomMonsterPos();
-    ctx.drawImage(charImage, IMAGE_START_X_LEFT, IMAGE_START_Y_LEFT, CHAR_WIDTH, CHAR_HEIGHT,
-        charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
 }
 
 function initBlocks()
 {
     NROWS = Math.floor(STAGE_HEIGHT/(CHAR_HEIGHT*2));
     NCOLS = Math.floor(STAGE_WIDTH/(CHAR_WIDTH*2));
-    BLOCKWIDTH = CHAR_WIDTH*2;
-    BLOCKHEIGHT = CHAR_HEIGHT*2;
 
     bricks = new Array(NROWS);
     for (i=0; i < NROWS; i++)
@@ -43,6 +55,14 @@ function randomMonsterPos(){
         if(MONSTER_Y[i] <= STAGE_HEIGHT/4)
             MONSTER_Y[i] += STAGE_HEIGHT/4;
     }
+}
+
+function rect(x,y,w,h)
+{
+    ctx.beginPath();
+    ctx.rect(x,y,w,h);
+    ctx.closePath();
+    ctx.fill();
 }
 
 //------------
@@ -86,7 +106,8 @@ function preloading()
         init();
         clearInterval(preloader);
 
-        gameloop = setInterval(update, TIME_PER_FRAME);
+        //gameloop = setInterval(update, TIME_PER_FRAME);
+        gameloop = animloop();
     }
 }
 
@@ -96,12 +117,33 @@ function preloading()
 //Charater Start Position
 var charX = CHAR_START_X;
 var charY = CHAR_START_Y;
+var movingLeft = true, movingRight = false, movingUp = false, movingDown = false;
 
 function update()
 {
     //Draw Image
+    drawMap();
+
+    //Draw the character on screen
+    if(movingLeft){
+        ctx.drawImage(charImage, IMAGE_START_X_LEFT, IMAGE_START_Y_LEFT, CHAR_WIDTH, CHAR_HEIGHT,
+            charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+    }
+    else if(movingRight){
+        ctx.drawImage(charImage, IMAGE_START_X_RIGHT, IMAGE_START_Y_RIGHT, CHAR_WIDTH, CHAR_HEIGHT,
+            charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+    }
+    else if(movingUp){
+        ctx.drawImage(charImage, IMAGE_START_X_UP, IMAGE_START_Y_UP, CHAR_WIDTH, CHAR_HEIGHT,
+            charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+    }
+    else{
+        ctx.drawImage(charImage, IMAGE_START_X_DOWN, IMAGE_START_Y_DOWN, CHAR_WIDTH, CHAR_HEIGHT,
+            charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+    }
 
 
+    //Capture keyboard presses
     document.onkeydown=function(e){
         switch(e.keyCode){
             case 37:
@@ -125,8 +167,19 @@ function update()
 //Character Movement
 //--------------
 function moveLeft(){
+    movingLeft = true;
+    movingRight = false;
+    movingUp = false;
+    movingDown = false;
+    row = Math.floor(charY/BLOCKHEIGHT);
+    col = Math.floor(charX/BLOCKWIDTH);
+
     ctx.drawImage(charImage, IMAGE_START_X_LEFT, IMAGE_START_Y_LEFT, CHAR_WIDTH, CHAR_HEIGHT,
         charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+
+    if(charY < NROWS*BLOCKHEIGHT && row >= 0 && col >= 0 && bricks[row][col] == 1){
+        bricks[row][col] = 2;
+    }
 
     charX -= CHAR_WIDTH;
     IMAGE_START_X_LEFT += CHAR_WIDTH;
@@ -135,8 +188,19 @@ function moveLeft(){
 }
 
 function moveRight(){
+    movingLeft = false;
+    movingRight = true;
+    movingUp = false;
+    movingDown = false;
+    row = Math.floor(charY/BLOCKHEIGHT);
+    col = Math.floor(charX/BLOCKWIDTH);
+
     ctx.drawImage(charImage, IMAGE_START_X_RIGHT, IMAGE_START_Y_RIGHT, CHAR_WIDTH, CHAR_HEIGHT,
         charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+
+    if(charY < NROWS*BLOCKHEIGHT && row >= 0 && col >= 0 && bricks[row][col] == 1){
+        bricks[row][col] = 2;
+    }
 
     charX += CHAR_WIDTH;
     IMAGE_START_X_RIGHT += CHAR_WIDTH;
@@ -145,8 +209,19 @@ function moveRight(){
 }
 
 function moveUp(){
+    movingLeft = false;
+    movingRight = false;
+    movingUp = true;
+    movingDown = false;
+    row = Math.floor(charY/BLOCKHEIGHT);
+    col = Math.floor(charX/BLOCKWIDTH);
+
     ctx.drawImage(charImage, IMAGE_START_X_UP, IMAGE_START_Y_UP, CHAR_WIDTH, CHAR_HEIGHT,
         charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+
+    if(charY < NROWS*BLOCKHEIGHT && row >= 0 && col >= 0 && bricks[row][col] == 1){
+        bricks[row][col] = 2;
+    }
 
     charY -= CHAR_HEIGHT;
     IMAGE_START_X_UP += CHAR_WIDTH;
@@ -155,8 +230,19 @@ function moveUp(){
 }
 
 function moveDown(){
+    movingLeft = false;
+    movingRight = false;
+    movingUp = false;
+    movingDown = true;
+    row = Math.floor(charY/BLOCKHEIGHT);
+    col = Math.floor(charX/BLOCKWIDTH);
+
     ctx.drawImage(charImage, IMAGE_START_X_DOWN, IMAGE_START_Y_DOWN, CHAR_WIDTH, CHAR_HEIGHT,
         charX, charY, CHAR_WIDTH*2,CHAR_HEIGHT*2);
+
+    if(charY < NROWS*BLOCKHEIGHT && row >= 0 && col >= 0 && bricks[row][col] == 1){
+        bricks[row][col] = 2;
+    }
 
     charY += CHAR_HEIGHT;
     IMAGE_START_X_DOWN += CHAR_WIDTH
@@ -167,3 +253,35 @@ function moveDown(){
 //-----------------
 //Monster spawning
 //-----------------
+
+
+//-----------------
+//Map Drawing
+//-----------------
+function drawMap(){
+    for(i = 0; i < NROWS; i++){
+        for(j = 0; j < NCOLS; j++){
+            if(bricks[i][j] == 2) {
+                ctx.fillStyle = "black";
+                rect(j * BLOCKWIDTH, i * BLOCKHEIGHT, BLOCKWIDTH, BLOCKHEIGHT);
+            }
+            else if(i < NROWS/4) {
+                ctx.fillStyle = "#58D3F7";
+                rect(j * BLOCKWIDTH, i * BLOCKHEIGHT, BLOCKWIDTH, BLOCKHEIGHT);
+                bricks[i][j] = 0;
+            }
+            else if(i >= NROWS/4 && i < NROWS/2) {
+                ctx.fillStyle = "#FFBF00";
+                rect(j * BLOCKWIDTH, i * BLOCKHEIGHT, BLOCKWIDTH, BLOCKHEIGHT);
+            }
+            else if(i >= NROWS/2 && i < (3*NROWS)/4) {
+                ctx.fillStyle = "#B43104";
+                rect(j * BLOCKWIDTH, i * BLOCKHEIGHT, BLOCKWIDTH, BLOCKHEIGHT);
+            }
+            else {
+                ctx.fillStyle = "#610B0B";
+                rect(j * BLOCKWIDTH, i * BLOCKHEIGHT, BLOCKWIDTH, BLOCKHEIGHT);
+            }
+        }
+    }
+}
