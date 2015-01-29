@@ -183,6 +183,8 @@ function moveLeft(){
         bricks[row][col] = 2;
     }
 
+
+
     charX -= CHAR_WIDTH;
     IMAGE_START_X_LEFT += CHAR_WIDTH;
     if (IMAGE_START_X_LEFT >= SPRITE_WIDTH_LEFT)
@@ -256,7 +258,6 @@ function moveDown(){
 //Monster spawning
 //-----------------
 function drawMonsters(){
-
     for(i = 0; i < 5; i++){
         ctx.drawImage(charImage, MONSTER_IMAGE_START_X, MONSTER_IMAGE_START_Y, MONSTER_WIDTH, MONSTER_HEIGHT,
             MONSTER_X[i], MONSTER_Y[i], MONSTER_WIDTH*2, MONSTER_HEIGHT*2);
