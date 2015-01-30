@@ -27,6 +27,12 @@ var NCOLS = Math.floor(STAGE_WIDTH/(CHAR_WIDTH*2));
 var BLOCKWIDTH = CHAR_WIDTH*2;
 var BLOCKHEIGHT = CHAR_HEIGHT*2;
 
+var MONSTERS = new Array(5);
+for(i = 0; i < 5; i++){
+    MONSTERS[i] = false;
+}
+var MONSTER_START_X = new Array(5);
+var MONSTER_START_Y = new Array(5);
 var MONSTER_X = new Array(5);
 var MONSTER_Y = new Array(5);
 
@@ -51,10 +57,12 @@ function initBlocks()
 
 function randomMonsterPos(){
     for(i = 0; i < 5; i++){
-        MONSTER_X[i] = Math.floor(Math.random()*(STAGE_WIDTH-MONSTER_WIDTH));
-        MONSTER_Y[i] = Math.floor(Math.random()*STAGE_HEIGHT);
-        if(MONSTER_Y[i] <= STAGE_HEIGHT/4)
-            MONSTER_Y[i] += STAGE_HEIGHT/4;
+        MONSTER_START_X[i] = Math.floor((Math.random()*(STAGE_WIDTH-MONSTER_WIDTH))/BLOCKWIDTH)*BLOCKWIDTH;
+        MONSTER_X[i] = MONSTER_START_X[i];
+        MONSTER_START_Y[i] = Math.floor((Math.random()*STAGE_HEIGHT)/BLOCKHEIGHT)*BLOCKHEIGHT;
+        if(MONSTER_START_Y[i] <= STAGE_HEIGHT/4)
+            MONSTER_START_Y[i] += Math.floor((STAGE_HEIGHT/4)/BLOCKHEIGHT)*BLOCKHEIGHT;
+        MONSTER_Y[i] = MONSTER_START_Y[i];
     }
 }
 
@@ -116,8 +124,8 @@ function preloading()
 //Game Loop
 //------------
 //Character Start Position
-var charX = CHAR_START_X;
-var charY = CHAR_START_Y;
+var charX = Math.floor(CHAR_START_X/BLOCKWIDTH)*BLOCKWIDTH;
+var charY = Math.floor(CHAR_START_Y/BLOCKHEIGHT)*BLOCKHEIGHT;
 var movingLeft = true, movingRight = false, movingUp = false, movingDown = false;
 
 function update()
@@ -185,7 +193,7 @@ function moveLeft(){
 
 
 
-    charX -= CHAR_WIDTH;
+    charX -= CHAR_WIDTH*2;
     IMAGE_START_X_LEFT += CHAR_WIDTH;
     if (IMAGE_START_X_LEFT >= SPRITE_WIDTH_LEFT)
         IMAGE_START_X_LEFT = 64;
@@ -206,7 +214,7 @@ function moveRight(){
         bricks[row][col] = 2;
     }
 
-    charX += CHAR_WIDTH;
+    charX += CHAR_WIDTH*2;
     IMAGE_START_X_RIGHT += CHAR_WIDTH;
     if (IMAGE_START_X_RIGHT >= SPRITE_WIDTH_RIGHT)
         IMAGE_START_X_RIGHT = 0;
@@ -227,7 +235,7 @@ function moveUp(){
         bricks[row][col] = 2;
     }
 
-    charY -= CHAR_HEIGHT;
+    charY -= CHAR_HEIGHT*2;
     IMAGE_START_X_UP += CHAR_WIDTH;
     if (IMAGE_START_X_UP >= SPRITE_WIDTH_UP)
         IMAGE_START_X_UP = 32;
@@ -248,7 +256,7 @@ function moveDown(){
         bricks[row][col] = 2;
     }
 
-    charY += CHAR_HEIGHT;
+    charY += CHAR_HEIGHT*2;
     IMAGE_START_X_DOWN += CHAR_WIDTH;
     if (IMAGE_START_X_DOWN >= SPRITE_WIDTH_DOWN)
         IMAGE_START_X_DOWN = 96 ;
@@ -257,10 +265,12 @@ function moveDown(){
 //-----------------
 //Monster spawning
 //-----------------
-function drawMonsters(){
-    for(i = 0; i < 5; i++){
-        ctx.drawImage(charImage, MONSTER_IMAGE_START_X, MONSTER_IMAGE_START_Y, MONSTER_WIDTH, MONSTER_HEIGHT,
-            MONSTER_X[i], MONSTER_Y[i], MONSTER_WIDTH*2, MONSTER_HEIGHT*2);
+function drawMonsters() {
+    for (i = 0; i < 5; i++) {
+        if (!MONSTERS[i]) {
+            ctx.drawImage(charImage, MONSTER_IMAGE_START_X, MONSTER_IMAGE_START_Y, MONSTER_WIDTH, MONSTER_HEIGHT,
+                MONSTER_X[i], MONSTER_Y[i], MONSTER_WIDTH * 2, MONSTER_HEIGHT * 2);
+        }
     }
 }
 
@@ -291,6 +301,16 @@ function drawMap(){
                 ctx.fillStyle = "#610B0B";
                 rect(j * BLOCKWIDTH, i * BLOCKHEIGHT, BLOCKWIDTH, BLOCKHEIGHT);
             }
+        }
+    }
+
+    for(i = 0; i < 5; i++) {
+        monsterCol = MONSTER_START_X[i] / BLOCKWIDTH;
+        monsterRow = MONSTER_START_Y[i] / BLOCKHEIGHT;
+
+        for (j = 0; j < 2; j++) {
+            bricks[monsterRow][monsterCol + j] = 2;
+            bricks[monsterRow][monsterCol - j] = 2;
         }
     }
 }
